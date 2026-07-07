@@ -24,12 +24,6 @@ export class ChatService {
     // Let's assume for a second we have a quick helper to get recipient IDs:
     const recipients = await this.getOtherParticipants(conversationId, senderId);
 
-    /*
-    // 3. Fire WebSocket events to anyone who is currently online
-    for (const recipientId of recipients) {
-       chatGateway.emitMessageToUser(recipientId, 'RECEIVE_MESSAGE', message);
-    }*/
-
     // 3. Fire WebSocket events to anyone who is currently online
     for (const recipientId of recipients) {
        chatGateway.emitMessageToUser(recipientId, 'RECEIVE_MESSAGE', message);
