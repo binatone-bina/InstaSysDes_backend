@@ -24,6 +24,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { api, apiRequest } from '../services/api';
 import Chat from './Chat';
+import ImageUploader from '../components/ImageUploader';
 import './Profile.css';
 
 /* ── Types ── */
@@ -1128,27 +1129,13 @@ export default function Profile() {
                     </div>
 
                     <div className="form-group" style={{ marginBottom: '20px' }}>
-                      <label className="form-label">Profile Picture</label>
-                      <div className="input-field-wrapper">
-                        <input
-                          type="text"
-                          placeholder="/uploads/filename.jpg  or  https://example.com/avatar.jpg"
-                          value={editProfilePicUrl}
-                          onChange={e => setEditProfilePicUrl(e.target.value)}
-                          disabled={updating}
-                        />
-                      </div>
-                      {editProfilePicUrl && (
-                        <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <img
-                            src={editProfilePicUrl}
-                            alt="preview"
-                            style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-light)' }}
-                            onError={e => (e.currentTarget.style.display = 'none')}
-                          />
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Preview</span>
-                        </div>
-                      )}
+                      <ImageUploader
+                        label="Profile Picture"
+                        value={editProfilePicUrl}
+                        onChange={setEditProfilePicUrl}
+                        placeholder="/uploads/avatar.jpg or https://..."
+                        rounded
+                      />
                     </div>
 
                     <div className="form-group" style={{ marginBottom: '24px' }}>
@@ -1448,26 +1435,24 @@ export default function Profile() {
 
             <form onSubmit={handleCreatePost} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div className="form-group" style={{ textAlign: 'left' }}>
-                <label className="form-label">Add Media URLs / Upload Paths</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <div className="input-field-wrapper" style={{ flex: 1 }}>
-                    <input
-                      type="text"
-                      placeholder="e.g. /uploads/photo.jpg or URL"
-                      value={imageInputText}
-                      onChange={e => setImageInputText(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          addImageUrl();
-                        }
-                      }}
-                    />
-                  </div>
-                  <button type="button" className="btn btn-secondary" onClick={addImageUrl}>Add</button>
-                </div>
-                
-                {/* List of currently added images */}
+                {/* Image uploader: pick from device or type a URL, then click Add */}
+                <ImageUploader
+                  label="Add Image"
+                  value={imageInputText}
+                  onChange={setImageInputText}
+                  placeholder="/uploads/photo.jpg or https://…"
+                />
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ marginTop: '8px', alignSelf: 'flex-start' }}
+                  onClick={addImageUrl}
+                  disabled={!imageInputText.trim()}
+                >
+                  + Add to post
+                </button>
+
+                {/* Thumbnails of already-added images */}
                 {newMediaUrls.length > 0 && (
                   <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {newMediaUrls.map((url, index) => (

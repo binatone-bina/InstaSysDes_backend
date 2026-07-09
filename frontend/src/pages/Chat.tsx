@@ -5,6 +5,7 @@ import {
   ChevronLeft, Search, UserPlus, Trash2, LogOut, Image as ImageIcon
 } from 'lucide-react';
 import { api, apiRequest, getAccessToken } from '../services/api';
+import ImageUploader from '../components/ImageUploader';
 import './Chat.css';
 
 /* ────────────────────────────────── Types ────────────────────────────────── */
@@ -858,16 +859,15 @@ export default function Chat({ currentUserId }: ChatProps) {
             {/* Input Area */}
             <form className="chat-input-area" onSubmit={handleSend}>
               {showImageInput && (
-                <div className="chat-image-input-row">
-                  <div className="input-field-wrapper" style={{ flex: 1 }}>
-                    <input
-                      type="text"
-                      placeholder="Image URL or /uploads/file.jpg"
+                <div className="chat-image-input-row" style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <ImageUploader
                       value={msgImageUrl}
-                      onChange={e => setMsgImageUrl(e.target.value)}
+                      onChange={setMsgImageUrl}
+                      placeholder="/uploads/photo.jpg or https://…"
                     />
                   </div>
-                  <button type="button" className="chat-icon-btn" onClick={() => { setShowImageInput(false); setMsgImageUrl(''); }}>
+                  <button type="button" className="chat-icon-btn" style={{ marginTop: '6px' }} onClick={() => { setShowImageInput(false); setMsgImageUrl(''); }}>
                     <X size={16} />
                   </button>
                 </div>

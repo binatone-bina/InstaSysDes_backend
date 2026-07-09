@@ -14,6 +14,7 @@ import { createServer } from 'http';
 import { chatGateway } from './modules/chat/chat.gateway';
 
 import chatRoutes from './modules/chat/chat.routes';
+import uploadRoutes from './routes/upload.routes';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/v1/posts', postRoutes);
 app.use('/api/v1/profiles', profileRoutes);
 app.use('/api/v1/feed', feedRoutes);
 app.use('/api/v1/chats', chatRoutes);
+app.use('/api/v1/upload', uploadRoutes);
 
 // Server and web socket setup
 const httpServer = createServer(app);
