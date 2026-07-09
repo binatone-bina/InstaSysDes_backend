@@ -1,0 +1,6 @@
+/* App-specific styling (most rules are in index.css and Home.css) */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}

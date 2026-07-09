@@ -1,62 +1,75 @@
-ConnectSphere
-The system is a high-performance, modular backend engine designed to support a scalable social networking platform. It handles user identity, social graphing, rich-media content distribution, dynamic feed aggregation, and zero-drop, real-time messaging with granular delivery tracking.
+ConnectSphere:
+ Real-Time Social Engine & Messaging PlatformA high-performance, full-stack social networking and messaging platform. 
+ 
+This project utilizes a modular monolithic backend architecture, combining a RESTful API with a stateful WebSocket gateway to handle social graphs, dynamic activity feeds, and zero-loss real-time chat.
 
-Microservices:
+FOR SYSTEM DESIGN: check out /backend/Designs
+![High Level Design](backend/Designs/HLD.jpg)
+[API Documentation](backend/Designs/apiDoc.pdf)
+[SRS](<backend/Designs/Software Requirements Specification.pdf>)
 
-1. Auth Service (auth)
-The Auth Service acts as the security gatekeeper for the entire application, managing user identity, registration, and session security.
+✨ Key Features
+Hybrid Real-Time Chat Engine: Direct Messages (DMs) and multi-tenant Group Chats using a dual-protocol architecture. Messages are written durably to PostgreSQL via HTTP before broadcasting to active clients via Socket.IO.
 
-Registration & Hashing: When a user signs up, the service captures their credentials and runs the password through a secure hashing algorithm (like bcrypt) before writing the record to the database. Plaintext passwords never touch the disk.
+Granular Delivery Tracking: Real-time state mutations for messaging (Sent, Delivered, Read) with dynamic broadcast revocation when users leave a thread.
 
-Token-Based Sessions: Upon a successful login, the service generates a stateless JSON Web Token (JWT) packed with the user's encrypted identification metadata (e.g., userId).
+High-Throughput Feed Generation: Dynamic activity feeds aggregated from complex social graphs (follower/following matrices) using optimized PostgreSQL LATERAL joins and CASE conditionals.
 
-Secure Cookie Transport: To prevent Cross-Site Scripting (XSS) attacks, the service bypasses traditional local storage and injects the JWT directly into an HttpOnly, Secure browser cookie.
+Cursor-Based Pagination: $O(1)$ lookup complexity for infinite scrolling across feeds and chat histories, preventing database degradation at scale.
 
-Global Middleware Guard: Every subsequent request to the backend passes through an authentication middleware that intercepts this cookie, verifies the token's signature, and extracts the user's identity into the request object (req.user) for downstream services to use.
+Zero-Trust Security & Auth: Stateless JWT authentication delivered exclusively via HttpOnly, Secure cookies, guarding both HTTP endpoints and WebSocket handshakes.
 
-2. Profile Service (profile)
-The Profile Service separates a user's strict authentication credentials from their public-facing social identity.
+Automated Data Integrity: PostgreSQL-level triggers automatically provision user profiles during registration, preventing orphaned records.
 
-Data Decoupling: It manages a dedicated profiles table that pairs one-to-one with the core users table. This keeps heavy metadata separate from the highly secure credentials table.
+Rich-Media Distribution: Middleware-driven file upload pipelines for profile avatars and post media assets.
 
-Metadata Management: It handles updates for customizable user elements like bios, profile pictures, and unique display names.
+🛠 Tech Stack
 
-Dynamic Resolution Source: Instead of storing duplicate copies of a user's name across posts or chat messages, other services perform database joins against this profile table. This ensure that when a user updates their profile picture or name, the change updates instantly across the entire application.
+Backend EngineRuntime: Node.js (v20+)Framework: Express.js (TypeScript)Real-Time Gateway: Socket.IOSecurity: bcrypt, jsonwebtoken, cookie-parserData & InfrastructurePrimary Database: PostgreSQL (Relational data, Transactions, Triggers)In-Memory Cache : Redis (Feed caching, active socket state)
 
-3. Follow Service (follow)
-The Follow Service builds and maps the relational social graph that connects your users together.
+Frontend ApplicationFramework: React (Vite)Styling: Tailwind CSS (Dark-mode optimized)Real-Time Client: socket.io-client
 
-Directional Relationships: Social links are directional (User A following User B does not automatically mean User B follows User A). The service models this behavior using a dedicated junction table containing pairs of follower_id and following_id as foreign keys.
+📂 Project StructurePlaintext.
+├── /backend            # Node.js/Express modular monolith
+│   ├── /src
+│   │   ├── /modules    # auth, chat, feed, follow, post, profile
+│   │   ├── /config     # DB, Redis, and WebSocket connections
+│   │   ├── /middleware # JWT validation, Multer file uploads
+│   │   └── app.ts      # Express & Socket.IO unified server bootstrap
+│   ├── /uploads        # Static directory for media assets
+│   └── package.json
+└── /frontend           # React UI and client-side integration
+    ├── /src
+    │   ├── /pages      # Feed, Inbox, Profile views
+    │   └── /services   # API and Socket connection logic
+    └── package.json
 
-Graph Mutators: It exposes clean operations to create (follow) or destroy (unfollow) these relational rows safely.
+🚀 Local Setup & Installation
+1. Prerequisites
+Ensure you have the following installed on your machine:Node.js (v20 or higher)PostgreSQL (v15 or higher)Redis Server (v7 or higher, running locally on port 6379)
 
-Network Queries: It serves as the data engine that allows the frontend to compute follower counts, following lists, and social boundaries (e.g., verifying if two users are connected before allowing certain interactions).
+2. Database SetupCreate a local PostgreSQL database (e.g., social_network_db). Then, execute your schema migrations to create the tables (users, profiles, posts, follows, conversations, messages, etc.).Crucial: Run the automated profile creation trigger in your SQL console so profiles generate instantly upon signup:SQLCREATE OR REPLACE FUNCTION create_profile_for_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO profiles (user_id, username, display_name) 
+  VALUES (NEW.id, NEW.username, NEW.username);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-4. Post Service (post)
-The Post Service drives the content creation engine of the platform, processing text payloads and rich media.
+CREATE TRIGGER trigger_create_profile_after_signup
+AFTER INSERT ON users
+FOR EACH ROW EXECUTE FUNCTION create_profile_for_new_user();
 
-Static Resource Routing: When a user creates a post with an image, the service coordinates with middleware to capture the file stream, save the asset locally into a structured /uploads directory, and expose it via static Express routing.
+3. Environment VariablesNavigate to the /backend directory, copy the example environment file, and fill in your database credentials:Bashcd backend
 
-Relational Storage: The service writes a post record containing the textual data, the generated public URL of the uploaded media asset, and a hard foreign key mapping the post to the specific author's user_id.
-
-Targeted Retrieval: It provides contextual endpoints to fetch a single specific post or compile an array of historical posts belonging exclusively to one individual's profile timeline.
-
-5. Feed Service (feed)
-The Feed Service is a heavy data-aggregation engine that synthesizes content across the social graph to build a personalized timeline.
-
-Dynamic Social Merging: When a user requests their feed, this service intercepts their requestorId, queries the Follow Service to retrieve a list of all users they are currently following, and queries the database for all posts authored by those individuals plus the user's own posts.
-
-Algorithmic Sorting: It merges and sorts this massive pool of post records in descending order based on their creation timestamps (created_at).
-
-Cursor-Based Pagination: To prevent database read degradation, the service compiles the feed using strict cursor pagination. It yields a specific batch of posts (e.g., 20) along with a timestamp "cursor" representing the oldest post in that batch. When the user scrolls down, the frontend passes that cursor back, allowing the engine to fetch the next 20 posts without rescanning the entire database.
-
-6. Chat Service (chat)
-The Chat Service is a high-performance, hybrid network engine combining stateless HTTP API architectures with stateful, real-time WebSockets.
-
-Durable Writes First: When a user hits send, the payload runs through an HTTP POST route that commits the message to PostgreSQL immediately. This ensures zero data loss, even if a user's internet drops a millisecond later.
-
-Dual-State Broadcast Layer: Once saved to the database, the service fetches all other participants in that chat thread. It cross-references an active memory layer or Redis cluster to check if those participants are online. If they are, it bypasses HTTP entirely, hands the payload to a Singleton WebSocket Gateway, and blasts the message directly to their device over an active socket channel (RECEIVE_MESSAGE).
-
-Offline Fallback Sync: If a recipient is offline, the WebSocket broadcast skips them. When that offline user eventually logs back into the app, their device fires an HTTP request to the getInbox endpoint to catch up on everything committed to PostgreSQL while they were away.
-
-Granular Receipt Tracking: The service captures incoming WebSocket acknowledgements (MESSAGE_DELIVERED and MESSAGE_READ) from recipients, writes accurate timestamps to the database, and routes real-time status updates back to the original sender to turn grey ticks into blue ticks instantly.
+cp .env.example .env
+(Ensure your .env includes your Postgres credentials, Redis host, JWT secret, and Client Origin for CORS).4. Install DependenciesOpen two separate terminal windows—one for the frontend and one for the backend—and install the dependencies:Terminal 1 (Backend):Bashcd backend
+npm install
+Terminal 2 (Frontend):Bashcd frontend
+npm install
+💻 Running the ApplicationOnce dependencies are installed and Redis/PostgreSQL are running locally, start both development servers.Terminal 1 (Backend):Bash# Starts the Express and Socket.IO server on the port defined in your .env (e.g., 3000)
+npm run dev
+Terminal 2 (Frontend):Bash# Starts the React Vite development server (usually on port 5173)
+npm run dev
+The application is now live! Open your browser to the URL provided by the frontend terminal (e.g., http://localhost:5173) to sign up your first user.

@@ -134,4 +134,16 @@ export class ChatController {
         }
     }
 
+    async getGroupParticipants(req: AuthRequest, res: Response): Promise<void> {
+        try {
+            const user = req.user as AuthRequest['user'] as { userId: string };
+            const { conversationId } = req.params as { conversationId: string };
+
+            const participants = await chatService.getOtherParticipants(conversationId, user.userId);
+            res.status(200).json({ success: true, data: participants });
+        } catch (error: any) {
+            res.status(400).json({ success: false, error: error.message });
+        }
+    }
+
 }

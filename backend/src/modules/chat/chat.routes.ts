@@ -32,4 +32,7 @@ router.delete('/:conversationId/members', chatController.removeMember);
 // 8. Leave a Group Chat
 router.post('/:conversationId/leave', chatController.leaveGroup);
 
+// 9. Get Group Participants(Added later)
+router.get('/:conversationId/participants', chatController.getGroupParticipants);
+
 export default router;

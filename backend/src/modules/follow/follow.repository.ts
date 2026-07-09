@@ -8,13 +8,16 @@ export class FollowRepository {
         try {
             await client.query('BEGIN');
 
-            await client.query(
+            const res = await client.query(
                 `INSERT INTO follows (follower_id, following_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
                 [followerId, followingId]
             );
-            //Increment counts
-            await client.query(`UPDATE profiles SET following_count = following_count + 1 WHERE user_id = $1`, [followerId]);
-            await client.query(`UPDATE profiles SET follower_count = follower_count + 1 WHERE user_id = $1`, [followingId]);
+            
+            //Increment counts ONLY if a row was actually inserted
+            if (res.rowCount && res.rowCount > 0) {
+                await client.query(`UPDATE profiles SET following_count = following_count + 1 WHERE user_id = $1`, [followerId]);
+                await client.query(`UPDATE profiles SET follower_count = follower_count + 1 WHERE user_id = $1`, [followingId]);
+            }
 
             await client.query('COMMIT');
         } catch(error) {
@@ -36,9 +39,10 @@ export class FollowRepository {
                 [followerId, followingId]
             );
 
+            // Fix invalid @MAX syntax with standard PostgreSQL GREATEST function
             if (res.rowCount && res.rowCount > 0) {
-                await client.query(`UPDATE profiles SET following_count = @MAX(0, following_count - 1) WHERE user_id = $1`, [followerId]);
-                await client.query(`UPDATE profiles SET follower_count = @MAX(0, follower_count - 1) WHERE user_id = $1`, [followingId]);
+                await client.query(`UPDATE profiles SET following_count = GREATEST(0, following_count - 1) WHERE user_id = $1`, [followerId]);
+                await client.query(`UPDATE profiles SET follower_count = GREATEST(0, follower_count - 1) WHERE user_id = $1`, [followingId]);
             }
 
             await client.query('COMMIT');
@@ -67,17 +71,20 @@ export class FollowRepository {
                 queryValues.push(pair.followerId, pair.followingId);
             });
 
+            // Use RETURNING to identify which follow relations were actually inserted (i.e. did not conflict)
             const batchQuery = `
             INSERT INTO follows (follower_id, following_id)
             VALUES ${valueRows.join(', ')}
             ON CONFLICT DO NOTHING
+            RETURNING follower_id, following_id
             `;
-            await client.query(batchQuery, queryValues);
+            const result = await client.query(batchQuery, queryValues);
+            const insertedPairs = result.rows;
 
-            //Bulk update profile metrics for the batch
-            for(const pair of followPairs) {
-                await client.query(`UPDATE profiles SET following_count = following_count + 1 WHERE user_id = $1`, [pair.followerId]);
-                await client.query(`UPDATE profiles SET follower_count = follower_count + 1 WHERE user_id = $1`, [pair.followingId]);
+            //Bulk update profile metrics for the batch ONLY for successfully inserted follows
+            for(const pair of insertedPairs) {
+                await client.query(`UPDATE profiles SET following_count = following_count + 1 WHERE user_id = $1`, [pair.follower_id]);
+                await client.query(`UPDATE profiles SET follower_count = follower_count + 1 WHERE user_id = $1`, [pair.following_id]);
             }
 
             await client.query('COMMIT');

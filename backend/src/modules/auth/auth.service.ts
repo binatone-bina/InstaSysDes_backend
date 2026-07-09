@@ -37,8 +37,9 @@ export class AuthService {
     }
 
     async login(email: string, passwordRaw: string) {
+        console.log("entered login service\n");
         const user = await authRepo.findUserByEmail(email);
-        if(!user) throw new Error('Invalid Credentials');
+        if(!user) {console.log("User not found"); throw new Error('Invalid Credentials');}
 
         const isValid = await bycrypt.compare(passwordRaw, user.password_hash);
         if(!isValid) throw new Error('Invalid Credentials');

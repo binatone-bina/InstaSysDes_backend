@@ -45,7 +45,7 @@ export class ChatService {
   }
 
   // Quick helper to find who else is in the chat
-    private async getOtherParticipants(conversationId: string, senderId: string) {
+    async getOtherParticipants(conversationId: string, senderId: string) {
         // Usually, you'd put this in chatRepo, but keeping it brief:
         //const res = await chatRepo.getChatHistory(conversationId, 1); // just a placeholder concept
         return await chatRepo.getConversationParticipantIds(conversationId, senderId);
