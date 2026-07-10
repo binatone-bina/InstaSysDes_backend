@@ -1,8 +1,6 @@
 // Client-side API Client with Token Refresh Interceptor
-const isLocal = typeof window !== 'undefined' && 
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-export const BACKEND_URL ='https://connectsphere-backend-6leh.onrender.com';
+export const BACKEND_URL = 'https://connectsphere-backend-6leh.onrender.com';
 
 const getFullPath = (path: string) => {
   if (path.startsWith('http://') || path.startsWith('https://')) {
