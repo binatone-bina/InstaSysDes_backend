@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, type DragEvent, type ChangeEvent } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
-import { getAccessToken } from '../services/api';
+import { getAccessToken, BACKEND_URL } from '../services/api';
 import './ImageUploader.css';
 
 interface ImageUploaderProps {
@@ -44,7 +44,7 @@ export default function ImageUploader({
       // Use XHR so we can track progress
       await new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/v1/upload');
+        xhr.open('POST', `${BACKEND_URL}/api/v1/upload`);
         xhr.withCredentials = true; // send auth cookie
 
         const token = getAccessToken();

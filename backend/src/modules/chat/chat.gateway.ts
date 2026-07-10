@@ -23,7 +23,10 @@ export class ChatGateway {
     public init(server: any) {
         this.io = new Server(server, {
         path: '/api/v1/chat/connect/', // No trailing slash!
-        cors: { origin: process.env.FRONTEND_URL || 'https://connectSphere.vercel.app' }
+        cors: { 
+            //origin: process.env.FRONTEND_URL || 'https://connectSphere.vercel.app' 
+            origin: 'http://localhost:5173', // Allow requests from the frontend during testing
+        }
         });
 
         this.setupMiddleware();

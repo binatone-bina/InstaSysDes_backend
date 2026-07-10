@@ -1,4 +1,15 @@
 // Client-side API Client with Token Refresh Interceptor
+const isLocal = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+export const BACKEND_URL ='https://connectsphere-backend-6leh.onrender.com';
+
+const getFullPath = (path: string) => {
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+  return `${BACKEND_URL}${path}`;
+};
 
 let inMemoryToken: string | null = null;
 let refreshPromise: Promise<string | null> | null = null;
@@ -19,7 +30,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
   refreshPromise = (async () => {
     try {
-      const response = await fetch('/api/v1/auth/refresh', {
+      const response = await fetch(getFullPath('/api/v1/auth/refresh'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -64,7 +75,7 @@ export async function apiRequest(path: string, options: RequestOptions = {}): Pr
   // Ensure cookies are sent (needed for refreshToken cookie)
   options.credentials = 'include';
 
-  let response = await fetch(path, options);
+  let response = await fetch(getFullPath(path), options);
 
   // If unauthorized, token might have expired. Try to refresh.
   if (response.status === 401 && !path.endsWith('/auth/refresh') && !path.endsWith('/auth/login')) {
@@ -75,7 +86,7 @@ export async function apiRequest(path: string, options: RequestOptions = {}): Pr
       const retryHeaders = new Headers(options.headers);
       retryHeaders.set('Authorization', `Bearer ${newAccessToken}`);
       options.headers = retryHeaders;
-      response = await fetch(path, options);
+      response = await fetch(getFullPath(path), options);
     } else {
       // Trigger global logout event or redirect to login
       window.dispatchEvent(new Event('auth-failed'));
