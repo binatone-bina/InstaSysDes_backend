@@ -558,6 +558,40 @@
   color: var(--text-primary);
 }
 
+/* Tech and Capabilities layout styles */
+.tech-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.eyecatcher-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+
+.section-divider {
+  width: 100%;
+  max-width: 1100px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-light), transparent);
+  margin: 60px 0;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .hero-title {

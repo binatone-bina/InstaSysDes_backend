@@ -2,9 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   MessageSquare, 
   Send, 
-  Shield, 
-  Zap, 
-  Compass, 
   Search, 
   MoreVertical, 
   Phone, 
@@ -13,7 +10,14 @@ import {
   Smile, 
   Check, 
   CheckCheck,
-  UserPlus
+  UserPlus,
+  Server,
+  Database,
+  Lock,
+  Share2,
+  Rss,
+  UserX,
+  Cpu
 } from 'lucide-react';
 import './Home.css';
 
@@ -207,7 +211,7 @@ export default function Home({ onAuthRequest }: HomeProps) {
         <nav className="nav-links">
           <a href="#features" className="nav-link">Features</a>
           <a href="#demo" className="nav-link">Live Mockup</a>
-          <a href="#architecture" className="nav-link">Architecture</a>
+          <a href="/uploads/img1.jpg" target="_blank" rel="noreferrer" className="nav-link">Architecture</a>
         </nav>
         <div style={{ display: 'flex', gap: '12px' }}>
           <button className="btn btn-secondary" onClick={onAuthRequest}>Sign In</button>
@@ -344,36 +348,99 @@ export default function Home({ onAuthRequest }: HomeProps) {
         </div>
       </section>
 
-      {/* Features List Section */}
+      {/* System Architecture & Engineering Highlights */}
       <section id="features" className="features-section">
         <div className="features-header">
-          <h2 className="features-title">Designed for Ultimate Reliability</h2>
-          <p className="features-subtitle">A state-of-the-art hybrid chat engine under the hood.</p>
+          <div className="badge">🛠️ System Architecture & Engineering Highlights</div>
+          <h2 className="features-title">Enterprise System Architecture</h2>
+          <p className="features-subtitle">Under the hood of a high-performance system design engineered to wow recruiters.</p>
         </div>
         <div className="features-grid">
           
           <div className="glass-card feature-card">
             <div className="feature-icon-wrapper">
-              <Shield size={24} />
+              <Cpu size={24} />
             </div>
-            <h3>Stateless HttpOnly Cookie Auth</h3>
-            <p>Credentials hashed via advanced cryptography and transmitted directly in strict HttpOnly browser contexts, avoiding local storage exploitation entirely.</p>
+            <div className="tech-badge">Express.js + Socket.IO + Redis</div>
+            <h3>⚡ Dual-Protocol Real-Time Engine</h3>
+            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            <p>Engineered a hybrid network architecture that synthesizes stateless HTTP REST APIs with stateful WebSockets. Messages are committed durably to PostgreSQL before real-time broadcasting, ensuring a zero-data-loss pipeline backed by Redis connection tracking.</p>
           </div>
 
           <div className="glass-card feature-card">
             <div className="feature-icon-wrapper">
-              <Zap size={24} />
+              <Database size={24} />
             </div>
-            <h3>Singleton WS Gateway</h3>
-            <p>Real-time updates delivered instantly via WebSocket interfaces with dual-state fallback storage for users momentarily disconnected from the network.</p>
+            <div className="tech-badge">PostgreSQL + Advanced SQL</div>
+            <h3>📉 Scalable Data Engineering & O(1) Pagination</h3>
+            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            <p>Eliminated database read-degradation by enforcing system-wide Cursor-Based Pagination for infinite scrolling feeds and chat histories. Offloaded complex data-merging and cross-user metadata resolution entirely to the database layer using dynamic query compilation.</p>
           </div>
 
           <div className="glass-card feature-card">
             <div className="feature-icon-wrapper">
-              <Compass size={24} />
+              <Server size={24} />
             </div>
-            <h3>Cursor-Based Aggregation</h3>
-            <p>Relational follow relationships query the social graph dynamically and paginate matching feed content using strict cursors to maintain fast database indexes.</p>
+            <div className="tech-badge">PostgreSQL + Redis Cache</div>
+            <h3>💾 Polyglot Persistence & Distributed State</h3>
+            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            <p>Orchestrated a dual-datastore blueprint. PostgreSQL handles multi-tenant group mappings and structured data via atomic transactions and automated database-level triggers, while Redis drives microsecond-latency caching for active social feeds.</p>
+          </div>
+
+          <div className="glass-card feature-card">
+            <div className="feature-icon-wrapper">
+              <Lock size={24} />
+            </div>
+            <div className="tech-badge">JWT + HttpOnly Cookies + Guards</div>
+            <h3>🔒 Zero-Trust Security Fabric</h3>
+            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            <p>Implemented an end-to-end server-side authentication pipeline. Session tokens are delivered exclusively via encrypted HttpOnly browser cookies, tightly guarding both stateless HTTP endpoints and stateful WebSocket connection handshakes against XSS/CSRF vectors.</p>
+          </div>
+
+        </div>
+      </section>
+
+      <div className="section-divider"></div>
+
+      {/* Core Functional Capabilities */}
+      <section className="features-section" style={{ marginTop: '0px' }}>
+        <div className="features-header">
+          <div className="badge" style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', color: '#3b82f6' }}>📊 Core Functional Capabilities</div>
+          <h2 className="features-title">Feature Matrix & Capabilities</h2>
+          <p className="features-subtitle">Comprehensive set of real-world backend features and state machines.</p>
+        </div>
+        <div className="features-grid">
+
+          <div className="glass-card feature-card">
+            <div className="feature-icon-wrapper" style={{ color: '#3b82f6', background: 'rgba(59, 130, 246, 0.15)' }}>
+              <Share2 size={24} />
+            </div>
+            <h3>🔗 The Social Graph</h3>
+            <p>Asymmetrical follower/following engine that dynamically calculates network matrices to restrict or grant user interactions.</p>
+          </div>
+
+          <div className="glass-card feature-card">
+            <div className="feature-icon-wrapper" style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.15)' }}>
+              <Rss size={24} />
+            </div>
+            <h3>📰 Activity Feed Fan-Out</h3>
+            <p>Reverse-chronological feed aggregation that instantly merges timeline content from a user's entire social graph.</p>
+          </div>
+
+          <div className="glass-card feature-card">
+            <div className="feature-icon-wrapper" style={{ color: '#f59e0b', background: 'rgba(245, 158, 11, 0.15)' }}>
+              <CheckCheck size={24} />
+            </div>
+            <h3>📨 Granular Message Receipts</h3>
+            <p>Real-time state mutations that track message lifecycles through three distinct phases: Sent, Delivered, and Read.</p>
+          </div>
+
+          <div className="glass-card feature-card">
+            <div className="feature-icon-wrapper" style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.15)' }}>
+              <UserX size={24} />
+            </div>
+            <h3>🚫 Dynamic Access Revocation</h3>
+            <p>Stateful group-chat architecture that instantly cuts off WebSocket broadcast streams and history fetching the millisecond a participant leaves or is removed.</p>
           </div>
 
         </div>
