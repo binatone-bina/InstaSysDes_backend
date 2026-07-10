@@ -20,7 +20,7 @@ export class FeedService {
         } else {
             //Cache Miss Fallback
             const dbNormalPosts = await feedRepo.getNormalFollowingsPosts(userId, limit);
-            normalPostIds = dbNormalPosts.map(p => ({ id: p.post_id, timestamp: new Date(p.created_at).getTime() }));
+            normalPostIds = dbNormalPosts.map((p: any) => ({ id: p.post_id, timestamp: new Date(p.created_at).getTime() }));
 
             //Async Repopulation
             if(normalPostIds.length > 0) {

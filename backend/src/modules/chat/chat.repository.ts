@@ -139,7 +139,7 @@ export class ChatRepository {
         WHERE conversation_id = $1 AND user_id != $2;
         `;
         const res = await pool.query(query, [conversationId, excludeUserId]);
-        return res.rows.map(row => row.user_id);
+        return res.rows.map((row: any) => row.user_id);
     }
 
     // Mark a single message as delivered

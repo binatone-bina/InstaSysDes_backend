@@ -12,7 +12,7 @@ pool.on('connect', () => {
   console.log('🐘 PostgreSQL pool connected successfully.');
 });
 
-pool.on('error', (err) => {
+pool.on('error', (err: Error) => {
   console.error('❌ Unexpected PostgreSQL error:', err);
 });
 

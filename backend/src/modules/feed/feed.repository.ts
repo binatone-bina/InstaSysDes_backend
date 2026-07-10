@@ -47,6 +47,6 @@ export class FeedRepository {
         `;
 
         const res = await pool.query(query, [userId]);
-        return res.rows.map(row => row.following_id);
+        return res.rows.map((row: any) => row.following_id);
     }
 }
