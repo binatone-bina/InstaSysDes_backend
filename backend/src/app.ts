@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import pool from './config/database';
 import redisClient from './config/redis';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import authRoutes from './modules/auth/auth.routes';
 import followRoutes from './modules/follow/follow.routes';
@@ -22,6 +23,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Adjust this to your frontend URL
+  credentials: true, // Allow cookies to be sent
+}));
 
 app.use(cookieParser());
 
