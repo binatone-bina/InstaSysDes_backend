@@ -25,8 +25,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(cors({
-  //origin: process.env.FRONTEND_URL || 'https://connectSphere.vercel.app', 
-  origin: 'http://localhost:5173', // Allow requests from the frontend during testing
+  origin: process.env.FRONTEND_URL || 'https://insta-sys-des-backend.vercel.app/', 
+  //origin: 'http://localhost:5173', // Allow requests from the frontend during testing
   credentials: true, // Allow cookies to be sent
 }));
 
