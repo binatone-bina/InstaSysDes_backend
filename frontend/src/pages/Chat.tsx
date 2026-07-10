@@ -4,7 +4,7 @@ import {
   MessageSquare, Plus, Users, X, Send, Check, CheckCheck,
   ChevronLeft, Search, UserPlus, Trash2, LogOut, Image as ImageIcon
 } from 'lucide-react';
-import { api, apiRequest, getAccessToken, BACKEND_URL } from '../services/api';
+import { api, apiRequest, getAccessToken } from '../services/api';
 import ImageUploader from '../components/ImageUploader';
 import './Chat.css';
 
@@ -130,10 +130,7 @@ export default function Chat({ currentUserId }: ChatProps) {
     const token = getAccessToken();
     if (!token || !currentUserId) return;
 
-    // Connect directly to port 3000 in local dev to bypass Vite's ws proxy write ECONNABORTED error
-    const wsUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:3000'
-      : BACKEND_URL;
+    const wsUrl = 'https://connectsphere-backend-6leh.onrender.com';
 
     const socket = io(wsUrl, {
       path: '/api/v1/chat/connect/',

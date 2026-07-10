@@ -7,13 +7,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://connectsphere-backend-6leh.onrender.com',
         changeOrigin: true,
         secure: false,
         ws: true
       },
       '/uploads': {
-        target: 'http://localhost:3000',
+        target: 'https://connectsphere-backend-6leh.onrender.com',
         changeOrigin: true,
         secure: false
       }

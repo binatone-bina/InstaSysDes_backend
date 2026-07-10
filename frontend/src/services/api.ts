@@ -1,6 +1,6 @@
 // Client-side API Client with Token Refresh Interceptor
 
-export const BACKEND_URL = 'https://connectsphere-backend-6leh.onrender.com';
+export const BACKEND_URL = '';
 
 const getFullPath = (path: string) => {
   if (path.startsWith('http://') || path.startsWith('https://')) {
