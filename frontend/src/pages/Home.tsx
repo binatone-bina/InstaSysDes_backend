@@ -353,7 +353,7 @@ export default function Home({ onAuthRequest }: HomeProps) {
         <div className="features-header">
           <div className="badge">🛠️ System Architecture & Engineering Highlights</div>
           <h2 className="features-title">Enterprise System Architecture</h2>
-          <p className="features-subtitle">Under the hood of a high-performance system design engineered to wow recruiters.</p>
+          <p className="features-subtitle">Under the hood of a high-performance system design.</p>
         </div>
         <div className="features-grid">
           
@@ -363,7 +363,7 @@ export default function Home({ onAuthRequest }: HomeProps) {
             </div>
             <div className="tech-badge">Express.js + Socket.IO + Redis</div>
             <h3>⚡ Dual-Protocol Real-Time Engine</h3>
-            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            
             <p>Engineered a hybrid network architecture that synthesizes stateless HTTP REST APIs with stateful WebSockets. Messages are committed durably to PostgreSQL before real-time broadcasting, ensuring a zero-data-loss pipeline backed by Redis connection tracking.</p>
           </div>
 
@@ -373,7 +373,7 @@ export default function Home({ onAuthRequest }: HomeProps) {
             </div>
             <div className="tech-badge">PostgreSQL + Advanced SQL</div>
             <h3>📉 Scalable Data Engineering & O(1) Pagination</h3>
-            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            
             <p>Eliminated database read-degradation by enforcing system-wide Cursor-Based Pagination for infinite scrolling feeds and chat histories. Offloaded complex data-merging and cross-user metadata resolution entirely to the database layer using dynamic query compilation.</p>
           </div>
 
@@ -383,7 +383,7 @@ export default function Home({ onAuthRequest }: HomeProps) {
             </div>
             <div className="tech-badge">PostgreSQL + Redis Cache</div>
             <h3>💾 Polyglot Persistence & Distributed State</h3>
-            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+           
             <p>Orchestrated a dual-datastore blueprint. PostgreSQL handles multi-tenant group mappings and structured data via atomic transactions and automated database-level triggers, while Redis drives microsecond-latency caching for active social feeds.</p>
           </div>
 
@@ -393,7 +393,7 @@ export default function Home({ onAuthRequest }: HomeProps) {
             </div>
             <div className="tech-badge">JWT + HttpOnly Cookies + Guards</div>
             <h3>🔒 Zero-Trust Security Fabric</h3>
-            <p className="eyecatcher-title">The Recruiters' Eyecatcher:</p>
+            
             <p>Implemented an end-to-end server-side authentication pipeline. Session tokens are delivered exclusively via encrypted HttpOnly browser cookies, tightly guarding both stateless HTTP endpoints and stateful WebSocket connection handshakes against XSS/CSRF vectors.</p>
           </div>
 
@@ -450,9 +450,8 @@ export default function Home({ onAuthRequest }: HomeProps) {
       <footer className="landing-footer">
         <div>© 2026 ConnectSphere. Built with React & TypeScript.</div>
         <div className="footer-links">
-          <a href="#" className="footer-link">Privacy Policy</a>
-          <a href="#" className="footer-link">Terms of Service</a>
-          <a href="https://github.com" target="_blank" rel="noreferrer" className="footer-link">GitHub</a>
+          
+          <a href="https://github.com/binatone-bina" target="_blank" rel="noreferrer" className="footer-link">GitHub</a>
         </div>
       </footer>
     </div>
